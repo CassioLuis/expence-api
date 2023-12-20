@@ -13,7 +13,7 @@ class Server {
   private start (): void {
     this.server.use(express.json())
     this.server.listen(this.port,
-      () => { console.log(`Server runing on port: ${this.port}`) }
+      () => { console.log(`Server runing on port: ${this.port}.`) }
     )
   }
 }
