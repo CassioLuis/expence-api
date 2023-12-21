@@ -1,31 +1,25 @@
 import mongoose, { type Mongoose } from 'mongoose'
 
-interface IMongo {
-  connect: () => Promise<void>
-  disconnect: () => Promise<void>
-  getInstance: () => Mongoose
-}
+const uri: string = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/mydatabase'
 
-export default class MongoDb implements IMongo {
-  private readonly uri: string = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/mydatabase'
-
-  public async connect (): Promise<void> {
+export default class MongoDb {
+  static async connect (): Promise<void> {
     console.log('Connecting to the database...')
 
     try {
-      await mongoose.connect(this.uri)
+      await mongoose.connect(uri)
       console.log('Connected successfully!')
     } catch (error) {
       console.error(error)
     }
   }
 
-  public async disconnect (): Promise<void> {
+  static async disconnect (): Promise<void> {
     await mongoose.disconnect()
     console.log('Disconnected from the database')
   }
 
-  public getInstance (): Mongoose {
+  static getInstance (): Mongoose {
     return mongoose
   }
 }

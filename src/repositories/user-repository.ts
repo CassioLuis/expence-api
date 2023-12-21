@@ -1,9 +1,17 @@
+import MongoDb from '../database/mongoDb'
 import { type IUserRepository, type IUserRegister } from '../types/user-types'
 import User from './models/user-models'
 
-export const UserRepository: IUserRepository = {
-  create (register: IUserRegister<any>): any {
-    return User.create(register)
+export const userRepository: IUserRepository = {
+  async create (register: IUserRegister<any>): Promise<any> {
+    await MongoDb.connect()
+    try {
+      return await User.create(register)
+    } catch (error) {
+      return { error }
+    } finally {
+      await MongoDb.disconnect()
+    }
   },
   getOne (id: string): any {
     return User.findById(id)

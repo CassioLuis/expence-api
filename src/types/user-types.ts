@@ -1,21 +1,21 @@
 import { type Request, type Response } from 'express'
 
 export interface IUserController {
-  create: (req: Request<any, any, IUserRegister<any>>, res: Response) => Promise<any>
+  create: (req: Request<any, any, IUserRegister<any>>, res: Response) => Promise<void>
   getOne: () => Promise<any>
   getAll: () => Promise<any>
   update: () => Promise<any>
 }
 
 export interface IUserService {
-  create: (register: IUserRegister<any>) => any
+  create: (register: IUserRegister<any>) => Promise<any>
   getOne: (id: string) => any
   getAll: () => any
   update: (register: IUserRegister<string>) => any
 }
 
 export interface IUserRepository {
-  create: (register: IUserRegister<any>) => any
+  create: (register: IUserRegister<any>) => Promise<any>
   getOne: (id: string) => any
   getAll: () => any
   update: (register: IUserRegister<string>) => any

@@ -1,14 +1,13 @@
-import { type Request, type Response } from 'express'
+import { userService } from '../services'
+import { type IUserController } from '../types/user-types'
 
-import { UserService } from '../services'
-import { type IUserRegister, type IUserController } from '../types/user-types'
-
-export const UserController: IUserController = {
-  async create (req: Request<any, any, IUserRegister<any>>, res: Response): Promise<any> {
+export const userController: IUserController = {
+  async create (req, res) {
     try {
-      await UserService.create(req.body)
+      const response = await userService.create(req.body)
+      res.json(response)
     } catch (error) {
-      res.json(error)
+      res.status(500).json({ error })
     }
   },
 

@@ -1,4 +1,4 @@
-import crypto, { Hash } from 'crypto'
+// import crypto, { Hash } from 'crypto'
 import mongoose from 'mongoose'
 
 const { Schema } = mongoose
@@ -25,10 +25,11 @@ const UserSchema = new Schema({
   }
 })
 
-UserSchema.pre('save', function (next) {
-  this.password = crypto.createHash(this.password, 10)
-  next()
-})
+// UserSchema.pre('save', function (next) {
+//   this.password = crypto.createHash(this.password)
+//   next()
+// })
+
 const User = mongoose.model('User', UserSchema)
 
 export default User
