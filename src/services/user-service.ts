@@ -1,3 +1,4 @@
+import encodePassword from '../helpers/encode-password'
 import { userRepository } from '../repositories'
 import { type IUserRegister, type IUserService } from '../types/user-types'
 
@@ -6,7 +7,7 @@ export const userService: IUserService = {
     try {
       const { name, username, email, password }: IUserRegister<any> = register
       // if (!name || !username || !email || !password) return res.status(400).send({ message: 'Existe algum campo invalido' })
-      const user = await userRepository.create(register)
+      const user = await userRepository.create({ ...register, password: encodePassword(password) })
       // if (!user) return { message: 'Error creating user' }
       return {
         message: 'User created succesfully',
