@@ -1,26 +1,32 @@
 import MongoDb from '../database/mongoDb'
-import { type IUserRepository, type IUserRegister } from '../types/user-types'
+import { type IUserRepository, type IUser } from '../types/user-types'
 import User from './models/user-models'
 
 export const userRepository: IUserRepository = {
-  async create (register: IUserRegister<any>): Promise<any> {
-    await MongoDb.connect()
+  async create (register: IUser): Promise<any> {
     try {
+      await MongoDb.connect()
       return await User.create(register)
-    } catch (error) {
-      return { error }
     } finally {
       await MongoDb.disconnect()
     }
   },
-  getOne (id: string): any {
-    return User.findById(id)
+
+  async get (param: object): Promise<object[] | []> {
+    try {
+      await MongoDb.connect()
+      return await User.find(param)
+    } finally {
+      await MongoDb.disconnect()
+    }
   },
+
   getAll (): any {
     return User.find()
   },
-  update (register: IUserRegister<string>): any {
-    const { id, name, username, email, password } = register
-    return User.findOneAndUpdate({ _id: id }, { id, name, username, email, password })
+
+  update (id, register): any {
+    const { name, lastName, email, password } = register
+    return User.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })
   }
 }

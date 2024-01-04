@@ -1,8 +1,9 @@
+import { type IUserController } from '@/types/user-types'
+
 import { userService } from '../services'
-import { type IUserController } from '../types/user-types'
 
 export const userController: IUserController = {
-  async create (req, res) {
+  async create (req, res): Promise<void> {
     try {
       const response = await userService.create(req.body)
       res.json(response)

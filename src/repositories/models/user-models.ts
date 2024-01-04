@@ -1,5 +1,6 @@
-// import crypto, { Hash } from 'crypto'
 import mongoose from 'mongoose'
+
+import encodePassword from '../../helpers/encode-password'
 
 const { Schema } = mongoose
 
@@ -8,7 +9,7 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
-  username: {
+  lastName: {
     type: String,
     required: true
   },
@@ -25,10 +26,10 @@ const UserSchema = new Schema({
   }
 })
 
-// UserSchema.pre('save', function (next) {
-//   this.password = crypto.createHash(this.password)
-//   next()
-// })
+UserSchema.pre('save', function (next) {
+  this.password = encodePassword(this.password)
+  next()
+})
 
 const User = mongoose.model('User', UserSchema)
 
