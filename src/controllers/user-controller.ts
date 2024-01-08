@@ -6,8 +6,8 @@ import { UserService } from '../services'
 class UserController implements IUserController {
   async create (req: Request<Record<string, unknown>, Record<string, unknown>, IUser>, res: Response): Promise<void> {
     try {
-      const response = await UserService.create(req.body)
-      res.json(response)
+      await UserService.create(req.body)
+      res.status(201)
     } catch (error) {
       res.status(500).json({ error })
     }

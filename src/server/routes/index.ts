@@ -1,9 +1,11 @@
 import { Router } from 'express'
 
-import usersRouter from './user-router'
+import swaggerRoute from './swagger-route'
+import usersRoute from './user-route'
 
 const router = Router()
 
-router.use(usersRouter)
+router.use(usersRoute)
+router.use('/doc', swaggerRoute)
 
 export default router

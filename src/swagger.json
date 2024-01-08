@@ -1,0 +1,97 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Expense Api",
+    "description": "Nessa documentação voce poderá consultar os end-points da API e será capaz de executar testes nas rotas. Não se esquça de se cadastrar para conseguir autorização.",
+    "contact": {
+      "email": "cassiocaruzo@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Local Server"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "summary": "Criar um usuário",
+        "description": "Endpoint para criar um novo usuário",
+        "tags": [
+          "Users"
+        ],
+        "content": {
+          "application/json": {
+            "$ref": "#/components/schemas/Users"
+          },
+          "exemples": {
+            "Users": {
+              "value": {
+                "name": "Cassio",
+                "lastName": "cj",
+                "email": "cassiocaruzo@gmail.com",
+                "password": "123456"
+              }
+            }
+          }
+        },
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Objeto de usuário",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Users"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Usuário criado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "$ref": "#/components/schemas/Users"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Requisição inválida"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
