@@ -1,5 +1,10 @@
 import cors from 'cors'
-import express from 'express'
+import express,
+{
+  type ErrorRequestHandler,
+  type NextFunction,
+  type Request
+} from 'express'
 
 class Server {
   app: express.Application
@@ -9,20 +14,26 @@ class Server {
     this.port = process.env.PORT ?? 8080
     this.app = express()
     this.start()
+    this.config()
   }
 
   private start (): void {
-    this.app.use(express.json())
-    this.app.use(cors())
     this.app.listen(this.port,
       () => { console.log(`Server running on port: ${this.port}.`) }
     )
-    this.app.use((err: any, _: any, res: any, next: any) => {
-      if (err instanceof SyntaxError) {
-        return res.status(400).json({ error: 'The req.body is not a valid json.' })
-      }
-      next()
-    })
+  }
+
+  private config (): void {
+    this.app.use(express.json())
+    this.app.use(cors())
+    this.app.use(this.bodyValid)
+  }
+
+  private bodyValid (err: ErrorRequestHandler, req: Request, res: any, next: NextFunction): void {
+    if (err instanceof SyntaxError) {
+      return res.status(400).json({ error: 'The req.body is not a valid json.' })
+    }
+    next()
   }
 }
 

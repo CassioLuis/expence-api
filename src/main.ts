@@ -1,6 +1,6 @@
-import { usersRouter } from './routes'
 import Server from './server'
+import routes from './server/routes'
 
 const { app } = Server
 
-app.use(usersRouter)
+app.use(routes)
