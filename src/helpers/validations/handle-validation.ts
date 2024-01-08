@@ -23,6 +23,6 @@ export const handleValidation: TValidation = (schemas) => async function (req, r
     }
   }
 
-  if (Object.keys(totalErrors).length === 0) { next(); return }
+  if (!Object.keys(totalErrors).length) { next(); return }
   res.status(400).json(totalErrors)
 }

@@ -2,8 +2,8 @@ import mongoose, { type Mongoose } from 'mongoose'
 
 const uri: string = process.env.MONGODB_URI ?? 'mongodb://localhost:27017/mydatabase'
 
-export default class MongoDb {
-  static async connect (): Promise<void> {
+class MongoDb {
+  async connect (): Promise<void> {
     console.log('Connecting to the database...')
 
     try {
@@ -14,12 +14,14 @@ export default class MongoDb {
     }
   }
 
-  static async disconnect (): Promise<void> {
+  async disconnect (): Promise<void> {
     await mongoose.disconnect()
     console.log('Disconnected from the database')
   }
 
-  static getInstance (): Mongoose {
+  getInstance (): Mongoose {
     return mongoose
   }
 }
+
+export default new MongoDb()

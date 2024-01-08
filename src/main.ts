@@ -1,9 +1,6 @@
-import cors from 'cors'
-
-import { userRouter } from './routes'
+import { usersRouter } from './routes'
 import Server from './server'
 
-const { server } = new Server()
+const { app } = Server
 
-server.use(cors())
-server.use(userRouter)
+app.use(usersRouter)

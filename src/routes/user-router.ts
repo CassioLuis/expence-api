@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express'
 
-import { userController } from '../controllers'
-import { validationMiddleware } from '../middlewares/validation-middleware'
+import { UserController } from '../controllers'
+import { ValidationMiddleware } from '../middlewares'
 
-const userRouter = Router()
-const basePath = '/user'
+const usersRouter = Router()
+const basePath = '/users'
 
-userRouter.post(`${basePath}/create`, validationMiddleware.createUserValidation, userController.create)
+usersRouter.post(`${basePath}`, ValidationMiddleware.createUserValidation, UserController.create)
 // userRouter.get('/', UserController.getAll)
 // userRouter.get('/:id', validId, validUser, UserController.getOne)
 // userRouter.patch('/:id', validId, validUser, UserController.update)
 
-export default userRouter
+export default usersRouter

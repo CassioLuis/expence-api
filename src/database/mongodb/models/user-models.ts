@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import encodePassword from '../../helpers/encode-password'
+import encodePassword from '../../../helpers/encode-password'
 
 const { Schema } = mongoose
 

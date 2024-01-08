@@ -1,8 +1,8 @@
-import MongoDb from '../database/mongoDb'
+import MongoDb from '../database/mongodb'
+import User from '../database/mongodb/models/user-models'
 import { type IUserRepository, type IUser } from '../types/user-types'
-import User from './models/user-models'
 
-export const userRepository: IUserRepository = {
+class UserRepository implements IUserRepository {
   async create (register: IUser): Promise<any> {
     try {
       await MongoDb.connect()
@@ -10,7 +10,7 @@ export const userRepository: IUserRepository = {
     } finally {
       await MongoDb.disconnect()
     }
-  },
+  }
 
   async get (param: object): Promise<object[] | []> {
     try {
@@ -19,14 +19,16 @@ export const userRepository: IUserRepository = {
     } finally {
       await MongoDb.disconnect()
     }
-  },
+  }
 
   getAll (): any {
     return User.find()
-  },
-
-  update (id, register): any {
-    const { name, lastName, email, password } = register
-    return User.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })
   }
+
+  // update (id, register): any {
+  //   const { name, lastName, email, password } = register
+  //   return User.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })
+  // }
 }
+
+export default new UserRepository()
