@@ -26,10 +26,10 @@ class Server {
   private config (): void {
     this.app.use(express.json())
     this.app.use(cors())
-    this.app.use(this.bodyValid)
+    this.app.use(this.bodyValidator)
   }
 
-  private bodyValid (err: ErrorRequestHandler, req: Request, res: any, next: NextFunction): void {
+  private bodyValidator (err: ErrorRequestHandler, req: Request, res: any, next: NextFunction): void {
     if (err instanceof SyntaxError) {
       return res.status(400).json({ error: 'The req.body is not a valid json.' })
     }

@@ -8,8 +8,8 @@ class UserController implements IUserController {
     try {
       await UserService.create(req.body)
       res.status(201)
-    } catch (error) {
-      res.status(500).json({ error })
+    } catch {
+      res.sendStatus(500)
     }
   }
 }
