@@ -9,14 +9,21 @@ export interface IUser {
 
 export interface IUserController {
   create: (req: Request<Record<string, unknown>, Record<string, unknown>, IUser>, res: Response) => Promise<void>
+  login: (req: Request<any, any, ILogin>, res: Response) => Promise<Response>
 }
 
 export interface IUserService {
   create: (register: IUser) => Promise<any>
+  login: (params: ILogin) => Promise<any>
 }
 
 export interface IUserRepository {
-  create: (register: IUser) => Promise<any>
-  get: (param: object) => Promise<object[] | []>
+  create: (register: IUser) => Promise<void>
+  get: (key: string, value: any) => Promise<object[] | []>
   getAll: () => any
+}
+
+export interface ILogin {
+  email: IUser['email']
+  password: IUser['password']
 }

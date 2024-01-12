@@ -1,9 +1,9 @@
-import MongoDb from '../database/mongodb'
-import UserModel from '../database/mongodb/models/user-models'
-import { type IUserRepository, type IUser } from '../types/user-types'
+import { type UserTypes } from '../../@types'
+import MongoDb from '../../database/mongodb'
+import UserModel from '../../database/mongodb/models/user-models'
 
-class UserRepository implements IUserRepository {
-  async create (register: IUser): Promise<any> {
+class UserRepository implements UserTypes.IUserRepository {
+  async create (register: UserTypes.IUser): Promise<any> {
     await MongoDb.connect()
     try {
       await UserModel.create(register)
@@ -12,10 +12,14 @@ class UserRepository implements IUserRepository {
     }
   }
 
-  async get (param: object): Promise<object[] | []> {
+  async get (
+    key: string,
+    value: any,
+    select = '-password'
+  ): Promise<UserTypes.IUser[] | []> {
     await MongoDb.connect()
     try {
-      const data = await UserModel.find(param)
+      const data = await UserModel.find({ [key]: value }).select(select)
       return data
     } finally {
       await MongoDb.disconnect()

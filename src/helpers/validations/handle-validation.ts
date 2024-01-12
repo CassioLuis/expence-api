@@ -5,7 +5,7 @@ type TProperty = 'body' | 'header' | 'params' | 'query'
 type TAllSchemas = Record<TProperty, ZodSchema>
 type TValidation = (schemas: Partial<TAllSchemas>) => RequestHandler
 
-export const handleValidation: TValidation = (schemas) => async function (req, res, next) {
+const handleValidation: TValidation = (schemas) => async function (req, res, next) {
   const totalErrors: Record<string, Record<string, string>> = {}
 
   for (const [key, schema] of Object.entries(schemas)) {
@@ -26,3 +26,5 @@ export const handleValidation: TValidation = (schemas) => async function (req, r
   if (!Object.keys(totalErrors).length) { next(); return }
   res.status(400).json(totalErrors)
 }
+
+export default handleValidation
