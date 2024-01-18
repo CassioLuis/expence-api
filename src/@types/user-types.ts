@@ -1,6 +1,8 @@
 import { type Request, type Response } from 'express'
+import { type Schema } from 'mongoose'
 
 export interface IUser {
+  id?: Schema.Types.ObjectId
   name: string
   lastName: string
   email: string
@@ -19,11 +21,11 @@ export interface IUserService {
 
 export interface IUserRepository {
   create: (register: IUser) => Promise<void>
-  get: (key: string, value: any) => Promise<object[] | []>
-  getAll: () => any
+  get: (value: object) => Promise<IUser[] | []>
 }
 
 export interface ILogin {
+  id?: IUser['id']
   email: IUser['email']
   password: IUser['password']
 }

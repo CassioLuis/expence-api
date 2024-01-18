@@ -1,7 +1,7 @@
 import { type Request, type Response } from 'express'
 
 import { type UserTypes } from '../../@types'
-import { UserService } from '../services'
+import { userService } from '../services'
 
 class UserController implements UserTypes.IUserController {
   async create (
@@ -9,7 +9,7 @@ class UserController implements UserTypes.IUserController {
     res: Response
   ): Promise<void> {
     try {
-      await UserService.create(req.body)
+      await userService.create(req.body)
       res.sendStatus(201)
     } catch {
       res.sendStatus(500)
@@ -18,10 +18,13 @@ class UserController implements UserTypes.IUserController {
 
   async login (req: Request<any, any, UserTypes.ILogin>, res: Response): Promise<Response> {
     try {
-      const response = await UserService.login(req.body)
+      const response = await userService.login(req.body)
       return res.status(200).json(response)
     } catch (error: any) {
-      return res.status(401).json({ error: error.message })
+      if (error.message === 'Invalid user') {
+        return res.status(401).json({ error: error.message })
+      }
+      return res.sendStatus(500)
     }
   }
 }

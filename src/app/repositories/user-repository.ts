@@ -1,6 +1,6 @@
 import { type UserTypes } from '../../@types'
-import MongoDb from '../../database/mongodb'
-import UserModel from '../../database/mongodb/models/user-models'
+import MongoDb from '../../infra/database/mongodb'
+import UserModel from '../../infra/database/mongodb/models/user-models'
 
 class UserRepository implements UserTypes.IUserRepository {
   async create (register: UserTypes.IUser): Promise<any> {
@@ -13,23 +13,16 @@ class UserRepository implements UserTypes.IUserRepository {
   }
 
   async get (
-    key: string,
-    value: any,
+    value: object,
     select = '-password'
   ): Promise<UserTypes.IUser[] | []> {
     await MongoDb.connect()
     try {
-      const data = await UserModel.find({ [key]: value }).select(select)
-      return data
+      return await UserModel.find(value).select(select)
     } finally {
       await MongoDb.disconnect()
     }
   }
-
-  getAll (): any {
-    return UserModel.find()
-  }
-
   // update (id, register): any {
   //   const { name, lastName, email, password } = register
   //   return UserModel.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })

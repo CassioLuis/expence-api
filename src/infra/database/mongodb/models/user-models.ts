@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import encodePassword from '../../../helpers/encode-password'
+import encode from '../../../../helpers/encode-password'
 
 const { Schema } = mongoose
 
@@ -27,7 +27,7 @@ const UserSchema = new Schema({
 })
 
 UserSchema.pre('save', function (next) {
-  this.password = encodePassword(this.password)
+  this.password = encode(this.password)
   next()
 })
 

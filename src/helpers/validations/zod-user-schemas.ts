@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 import { type UserTypes } from '../../@types'
-import { UserRepository } from '../../app/repositories'
+import { userRepository } from '../../app/repositories'
 
 export const Create: z.ZodType<UserTypes.IUser> = z.object({
   name: z.string().min(3),
@@ -16,7 +16,7 @@ export const Login: z.ZodType<UserTypes.ILogin> = z.object({
 })
 
 async function isInUseEmail (email: UserTypes.ILogin['email']): Promise<boolean> {
-  const response: object[] | [] = await UserRepository.get('email', email)
+  const response: object[] | [] = await userRepository.get({ email })
   if (!response.length) return true
   return false
 }

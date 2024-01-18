@@ -1,1 +1,1 @@
-export { default as UserController } from './user-controller'
+export { default as userController } from './user-controller'

@@ -6,6 +6,7 @@ import usersRoute from './user-route'
 const router = Router()
 
 router.use(usersRoute)
+
 router.use('/doc', swaggerRoute)
 
 export default router

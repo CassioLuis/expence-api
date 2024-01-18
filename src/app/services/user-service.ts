@@ -1,21 +1,28 @@
 import { type UserTypes } from '../../@types'
-import toBase64 from '../../helpers/encode-password'
-import { UserRepository } from '../repositories'
+import { JwtAdapter } from '../adapters'
+import { type ITokenHandlerAdapter } from '../contracts'
+import { userRepository } from '../repositories'
+
+const secretKey = process.env.SECRET_JWT ?? ''
+const expiresIn = { expiresIn: 500 }
 
 class UserService implements UserTypes.IUserService {
+  constructor (private readonly tokenHandler: ITokenHandlerAdapter) { }
+
   async create (register: UserTypes.IUser): Promise<any> {
-    await UserRepository.create(register)
+    await userRepository.create(register)
     return {
       message: 'User created succesfully'
     }
   }
 
-  async login (params: UserTypes.ILogin): Promise<any> {
-    const { email, password } = params
-    const user = await UserRepository.get('email', email, '+password')
-    const loged = user.filter(user => user.password === toBase64(password))
-    if (!loged.length) throw new Error('Invalid user')
+  async login (login: UserTypes.ILogin): Promise<any> {
+    const token = this.tokenHandler.generateToken(login)
+    console.log('Token gerado:', token)
+    return { token }
   }
 }
 
-export default new UserService()
+export default new UserService(
+  new JwtAdapter(secretKey, expiresIn)
+)

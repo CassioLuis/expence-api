@@ -1,5 +1,5 @@
-import Server from './server'
-import routes from './server/routes'
+import Server from './infra/server'
+import routes from './infra/server/routes'
 
 const { app } = Server
 
