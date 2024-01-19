@@ -16,15 +16,12 @@ class UserController implements UserTypes.IUserController {
     }
   }
 
-  async login (req: Request<any, any, UserTypes.ILogin>, res: Response): Promise<Response> {
+  async resetPassword (req: Request, res: Response): Promise<void> {
     try {
-      const response = await userService.login(req.body)
-      return res.status(200).json(response)
-    } catch (error: any) {
-      if (error.message === 'Invalid user') {
-        return res.status(401).json({ error: error.message })
-      }
-      return res.sendStatus(500)
+      const reponse = await userService.resetPassword(req.body as UserTypes.IUser)
+      res.status(200).json(reponse)
+    } catch {
+      res.sendStatus(500)
     }
   }
 }

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import encode from '../../../../helpers/encode-password'
+import encode from '../../../../helpers/utils/encode-password'
 
 const { Schema } = mongoose
 
@@ -22,7 +22,6 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
-    // select: false
   }
 })
 

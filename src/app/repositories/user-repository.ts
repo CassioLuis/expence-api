@@ -1,6 +1,6 @@
 import { type UserTypes } from '../../@types'
 import MongoDb from '../../infra/database/mongodb'
-import UserModel from '../../infra/database/mongodb/models/user-models'
+import UserModel from '../../infra/database/mongodb/models/user-model'
 
 class UserRepository implements UserTypes.IUserRepository {
   async create (register: UserTypes.IUser): Promise<any> {
@@ -23,10 +23,11 @@ class UserRepository implements UserTypes.IUserRepository {
       await MongoDb.disconnect()
     }
   }
-  // update (id, register): any {
-  //   const { name, lastName, email, password } = register
-  //   return UserModel.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })
-  // }
+
+  async update (user: UserTypes.IUser): Promise<void> {
+    const { id, name, lastName, email, password } = user
+    await UserModel.findOneAndUpdate({ _id: id }, { id, name, lastName, email, password })
+  }
 }
 
 export default new UserRepository()
