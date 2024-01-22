@@ -2,10 +2,13 @@ import { type Response, type Request, type NextFunction } from 'express'
 
 import { type AuthTypes } from '../../@types'
 import encode from '../../helpers/utils/encode-password'
-import { JwtAdapter } from '../adapters'
+import { TokenHandlerAdapter } from '../adapters/tokenHandler'
+import type ITokenHandlerContract from '../adapters/tokenHandler/tokenHandler-contract'
 import userRepository from '../repositories/user-repository'
 
 class AuthMiddleware {
+  constructor (readonly TokenHandlerAdapter: ITokenHandlerContract) { }
+
   async credentialsValidation (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
       const { email, password } = req.body as AuthTypes.ILogin
@@ -19,7 +22,7 @@ class AuthMiddleware {
     }
   }
 
-  async tokenValidation (req: Request, res: Response, next: NextFunction): Promise<void> {
+  tokenValidation (req: Request, res: Response, next: NextFunction): any {
     try {
       const { authorization } = req.headers
       if (!authorization) throw new Error()
@@ -27,20 +30,13 @@ class AuthMiddleware {
       const [schema, token] = authorization.split(' ')
       if (schema !== 'Bearer' || !token) throw new Error()
 
-      const tokeAdapter = new JwtAdapter()
-      const decoded = tokeAdapter.verifyToken(token, process.env.SECRET_JWT ?? '')
-
-      // const user = await userRepository.get({ id: decoded.id })
-      console.log(decoded)
-      // if (!user.id) throw new Error()
-
-      // req.body = { ...req.body, user: user.id }
-      // next()
-      res.sendStatus(200)
-    } catch (error: any) {
-      res.status(401).json({ error: 'Invalid token - middleware' })
+      const decoded = TokenHandlerAdapter.tokenVerify(token, process.env.SECRET_JWT ?? '')
+      req.body.user = decoded.userId
+      next()
+    } catch {
+      res.status(401).json({ message: 'Invalid token' })
     }
   }
 }
 
-export default new AuthMiddleware()
+export default new AuthMiddleware(TokenHandlerAdapter)

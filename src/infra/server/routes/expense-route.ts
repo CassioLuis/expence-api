@@ -14,4 +14,14 @@ expenseRouter.post(`${basePath}`,
   expenseController.create
 )
 
+expenseRouter.delete(`${basePath}/:expenseId`,
+  authMiddleware.tokenValidation,
+  expenseController.delete
+)
+
+expenseRouter.get(`${basePath}`,
+  authMiddleware.tokenValidation,
+  expenseController.get
+)
+
 export default expenseRouter

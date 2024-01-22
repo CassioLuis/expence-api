@@ -1,4 +1,5 @@
 import { type Request, type Response } from 'express'
+import { type Schema } from 'mongoose'
 
 import { type IUser } from './user-types'
 
@@ -17,7 +18,7 @@ export interface IAuthController {
 }
 
 export interface IAuthService {
-  login: (login: ILogin) => Promise<IToken>
+  login: (userId: Schema.Types.ObjectId) => Promise<IToken>
 }
 
 export interface IAuthMiddleware {

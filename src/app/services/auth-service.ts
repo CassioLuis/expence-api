@@ -1,16 +1,17 @@
+import { type Schema } from 'mongoose'
+
 import { type AuthTypes } from '../../@types'
-import { JwtAdapter } from '../adapters'
-import { type Contracts } from '../contracts'
+import { TokenHandlerAdapter, type TokenHandlerContract } from '../adapters/tokenHandler'
 
 class AuthService implements AuthTypes.IAuthService {
-  constructor (private readonly tokenHandler: Contracts.ITokenHandlerAdapter) { }
+  constructor (private readonly tokenHandler: TokenHandlerContract) { }
 
-  async login (login: AuthTypes.ILogin): Promise<AuthTypes.IToken> {
+  async login (userId: Schema.Types.ObjectId): Promise<AuthTypes.IToken> {
     const secretKey = process.env.SECRET_JWT ?? ''
     const expiresIn = { expiresIn: '10min' }
-    const token = this.tokenHandler.generateToken(login, secretKey, expiresIn)
+    const token = this.tokenHandler.tokenGenerate(userId, secretKey, expiresIn)
     return { token }
   }
 }
 
-export default new AuthService(new JwtAdapter())
+export default new AuthService(TokenHandlerAdapter)

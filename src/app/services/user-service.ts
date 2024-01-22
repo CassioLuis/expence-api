@@ -1,5 +1,4 @@
 import { type AuthTypes, type UserTypes } from '../../@types'
-import { JwtAdapter } from '../adapters'
 import { userRepository } from '../repositories'
 
 class UserService implements UserTypes.IUserService {
@@ -9,12 +8,11 @@ class UserService implements UserTypes.IUserService {
   }
 
   async resetPassword (user: UserTypes.IUser): Promise<AuthTypes.IToken> {
-    const scretKey = process.env.SECRET_JWT ?? ''
-    const expiresIn = { expiresIn: 100 }
-    const [userData] = await userRepository.get({ email: user.email })
-    const tokenAdapter = new JwtAdapter()
-    const token = tokenAdapter.generateToken({ id: userData.id }, scretKey, expiresIn)
-    return { token }
+    // const scretKey = process.env.SECRET_JWT ?? ''
+    // const expiresIn = { expiresIn: 100 }
+    // const [userData] = await userRepository.get({ email: user.email })
+    // const token = tokenAdapter.generateToken({ id: userData.id }, scretKey, expiresIn)
+    return { token: 'token' }
   }
 }
 
