@@ -1,5 +1,3 @@
-import { type FilterQuery } from 'mongoose'
-
 import { type ExpenseTypes } from '../../@types'
 import mongodb from '../../infra/database/mongodb'
 import Expense from '../../infra/database/mongodb/models/expense-model'
@@ -23,10 +21,30 @@ class ExpenseRepository {
     }
   }
 
-  async get (param: FilterQuery<ExpenseTypes.TFilterQuery>): Promise<ExpenseTypes.IExpense[] | undefined> {
+  async getAll (): Promise<ExpenseTypes.IExpense[]> {
     await mongodb.connect()
     try {
-      const expenses: ExpenseTypes.IExpense[] = await Expense.find(param)
+      const expenses: ExpenseTypes.IExpense[] = await Expense.find()
+      return expenses
+    } finally {
+      await mongodb.disconnect()
+    }
+  }
+
+  async getByUser (userId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense[] | undefined> {
+    await mongodb.connect()
+    try {
+      const expenses: ExpenseTypes.IExpense[] = await Expense.find({ user: userId })
+      return expenses
+    } finally {
+      await mongodb.disconnect()
+    }
+  }
+
+  async getById (expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense[] | undefined> {
+    await mongodb.connect()
+    try {
+      const expenses: ExpenseTypes.IExpense[] = await Expense.find({ id: expenseId })
       return expenses
     } finally {
       await mongodb.disconnect()

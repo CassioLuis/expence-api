@@ -5,12 +5,19 @@ import { type ExpenseTypes } from '../../@types'
 import { expenseService } from '../services'
 
 class ExpenseController {
+  errorHandler ({ message }: any, res: Response): void {
+    if (message === expenseService.errorMessage) {
+      res.status(404).json({ message })
+      return
+    }
+    res.sendStatus(500)
+  }
+
   async create (req: Request, res: Response): Promise<void> {
     try {
       await expenseService.create(req.body as ExpenseTypes.IExpense)
       res.status(201).json(req.body)
     } catch (error: any) {
-      console.log(error)
       res.sendStatus(500)
     }
   }
@@ -18,24 +25,33 @@ class ExpenseController {
   async delete (req: Request, res: Response): Promise<void> {
     try {
       const deletePayload: ExpenseTypes.IDeletePayload = {
-        userId: req.body.userId,
-        expenseId: req.params as unknown as Schema.Types.ObjectId
+        userId: req.body.user,
+        expenseId: req.params.expenseId as unknown as Schema.Types.ObjectId
       }
       await expenseService.delete(deletePayload)
       res.sendStatus(204)
     } catch (error: any) {
-      console.log(error)
-      res.sendStatus(500)
+      this.errorHandler(error, res)
     }
   }
 
-  async get (req: Request, res: Response): Promise<void> {
+  async getAllByUser (req: Request, res: Response): Promise<any> {
     try {
-      const expenses = await expenseService.get(req.body.userId as ExpenseTypes.IExpense['user'])
+      const { user } = req.body
+      const expenses = await expenseService.getByUser(user as unknown as ExpenseTypes.IExpense['user'])
       res.status(200).json(expenses)
     } catch (error: any) {
-      console.log(error)
-      res.sendStatus(500)
+      this.errorHandler(error, res)
+    }
+  }
+
+  async getById (req: Request, res: Response): Promise<any> {
+    try {
+      const { expenseId } = req.params
+      const expense = await expenseService.getById(expenseId as unknown as ExpenseTypes.IExpense['id'])
+      res.status(201).json(expense)
+    } catch (error: any) {
+      this.errorHandler(error, res)
     }
   }
 }

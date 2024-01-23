@@ -8,7 +8,7 @@ class AuthService implements AuthTypes.IAuthService {
 
   async login (userId: Schema.Types.ObjectId): Promise<AuthTypes.IToken> {
     const secretKey = process.env.SECRET_JWT ?? ''
-    const expiresIn = { expiresIn: '10min' }
+    const expiresIn = { expiresIn: '24h' }
     const token = this.tokenHandler.tokenGenerate(userId, secretKey, expiresIn)
     return { token }
   }
