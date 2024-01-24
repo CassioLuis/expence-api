@@ -2,7 +2,7 @@ import { type Schema } from 'mongoose'
 
 export interface IExpense {
   id?: Schema.Types.ObjectId | undefined
-  date: string
+  expenseDate: string
   description: string
   category: string
   expenseValue: number

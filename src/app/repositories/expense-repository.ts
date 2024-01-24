@@ -41,10 +41,30 @@ class ExpenseRepository {
     }
   }
 
-  async getById (expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense[] | undefined> {
+  async getById (id: ExpenseTypes.IExpense['id'] | string | number): Promise<ExpenseTypes.IExpense[] | undefined> {
     await mongodb.connect()
     try {
-      const expenses: ExpenseTypes.IExpense[] = await Expense.find({ id: expenseId })
+      const expense: ExpenseTypes.IExpense[] = await Expense.find({ _id: id })
+      return expense
+    } finally {
+      await mongodb.disconnect()
+    }
+  }
+
+  async getByDateInterval (
+    userId: ExpenseTypes.IExpense['user'] | string | number,
+    iniDate: string,
+    finDate: string
+  ): Promise<ExpenseTypes.IExpense[] | undefined> {
+    await mongodb.connect()
+    try {
+      const expenses: ExpenseTypes.IExpense[] = await Expense.find({
+        user: userId,
+        expenseDate: {
+          $gte: iniDate,
+          $lte: finDate
+        }
+      })
       return expenses
     } finally {
       await mongodb.disconnect()

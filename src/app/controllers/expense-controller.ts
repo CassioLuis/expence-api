@@ -6,8 +6,9 @@ import { expenseService } from '../services'
 
 class ExpenseController {
   errorHandler ({ message }: any, res: Response): void {
-    if (message === expenseService.errorMessage) {
-      res.status(404).json({ message })
+    const error = expenseService.errorMessages[message]
+    if (error) {
+      res.status(error.status).json({ message: error.message })
       return
     }
     res.sendStatus(500)
@@ -35,7 +36,7 @@ class ExpenseController {
     }
   }
 
-  async getAllByUser (req: Request, res: Response): Promise<any> {
+  async getAllByUser (req: Request, res: Response): Promise<void> {
     try {
       const { user } = req.body
       const expenses = await expenseService.getByUser(user as unknown as ExpenseTypes.IExpense['user'])
@@ -45,12 +46,28 @@ class ExpenseController {
     }
   }
 
-  async getById (req: Request, res: Response): Promise<any> {
+  async getById (req: Request, res: Response): Promise<void> {
     try {
       const { expenseId } = req.params
-      const expense = await expenseService.getById(expenseId as unknown as ExpenseTypes.IExpense['id'])
+      const expense = await expenseService.getById(expenseId)
       res.status(201).json(expense)
     } catch (error: any) {
+      this.errorHandler(error, res)
+    }
+  }
+
+  async getAnalitic (req: Request, res: Response): Promise<void> {
+    try {
+      const { iniDate, finDate } = req.query
+      const { user } = req.body
+      const expenses = await expenseService.getByDateInterval(
+        user as string,
+        iniDate as string,
+        finDate as string
+      )
+      res.status(201).json(expenses)
+    } catch (error: any) {
+      console.log(error)
       this.errorHandler(error, res)
     }
   }

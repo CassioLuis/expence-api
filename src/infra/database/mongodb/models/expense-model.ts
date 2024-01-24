@@ -3,9 +3,13 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const ExpenseSchema = new Schema({
-  date: {
+  expenseDate: {
     type: String,
     required: true
+  },
+  creationDate: {
+    type: Date,
+    default: Date.now
   },
   description: {
     type: String,

@@ -10,8 +10,8 @@ const basePath = '/expenses'
 
 // POST
 expenseRouter.post(`${basePath}`,
-  reqValidatorMiddleware.createExpenseValidation,
   authMiddleware.tokenValidation,
+  reqValidatorMiddleware.createExpenseValidation,
   expenseController.create.bind(expenseController)
 )
 
@@ -22,6 +22,11 @@ expenseRouter.delete(`${basePath}/:expenseId`,
 )
 
 // GET
+expenseRouter.get(`${basePath}/analitic`,
+  authMiddleware.tokenValidation,
+  expenseController.getAnalitic.bind(expenseController)
+)
+
 expenseRouter.get(`${basePath}/:expenseId`,
   authMiddleware.tokenValidation,
   expenseController.getById.bind(expenseController)
