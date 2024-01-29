@@ -17,9 +17,10 @@ class ExpenseController {
   async create (req: Request, res: Response): Promise<void> {
     try {
       await expenseService.create(req.body as ExpenseTypes.IExpense)
-      res.status(201).json(req.body)
+      res.sendStatus(201)
     } catch (error: any) {
-      res.sendStatus(500)
+      console.log(error) 
+      this.errorHandler(error, res)
     }
   }
 
@@ -27,7 +28,7 @@ class ExpenseController {
     try {
       const deletePayload: ExpenseTypes.IDeletePayload = {
         userId: req.body.user,
-        expenseId: req.params.expenseId as unknown as Schema.Types.ObjectId
+        expenseId: req.params.expenseId as unknown as ExpenseTypes.IExpense['id']
       }
       await expenseService.delete(deletePayload)
       res.sendStatus(204)
@@ -42,6 +43,7 @@ class ExpenseController {
       const expenses = await expenseService.getByUser(user as unknown as ExpenseTypes.IExpense['user'])
       res.status(200).json(expenses)
     } catch (error: any) {
+      console.log(error)      
       this.errorHandler(error, res)
     }
   }
@@ -61,13 +63,23 @@ class ExpenseController {
       const { iniDate, finDate } = req.query
       const { user } = req.body
       const expenses = await expenseService.getByDateInterval(
-        user as string,
-        iniDate as string,
-        finDate as string
+        user as string, iniDate as string, finDate as string
       )
       res.status(201).json(expenses)
     } catch (error: any) {
       console.log(error)
+      this.errorHandler(error, res)
+    }
+  }
+
+  async update (req: Request, res: Response): Promise<void> {
+    try {
+      const { expenseId } = req.params
+      const response = await expenseService.update(
+        req.body as ExpenseTypes.IExpense, expenseId as unknown as ExpenseTypes.IExpense['id']
+      )
+      res.status(200).json(response)
+    } catch (error: any) {
       this.errorHandler(error, res)
     }
   }

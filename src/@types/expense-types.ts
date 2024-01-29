@@ -1,22 +1,35 @@
 import { type Schema } from 'mongoose'
+import { CategoryTypes, ExpenseTypes, UserTypes } from '.'
 
 export interface IExpense {
   id?: Schema.Types.ObjectId | undefined
   expenseDate: string
   description: string
-  category: string
+  category: CategoryTypes.ICategory['id']
   expenseValue: number
   creditCard?: boolean | undefined
   quota?: number | undefined
   totalQuota?: number | undefined
-  user?: Schema.Types.ObjectId | undefined
+  user?: UserTypes.IUser['id']
 }
 
 export interface IDeletePayload {
-  userId: Schema.Types.ObjectId
-  expenseId: Schema.Types.ObjectId
+  userId: UserTypes.IUser['id']
+  expenseId: ExpenseTypes.IExpense['id']
 }
 
-export type TFilterQuery =
-'id' | 'date' | 'description' | 'category' |
-'expenseValue' | 'creditCard' | 'quota' | 'totalQuota' | 'user'
+export interface IAnalitic {
+  category: IExpense['category']
+  value: number
+}
+
+
+export interface IExpenseUpdate {
+  expenseDate?: string
+  description?: string
+  category?: string
+  expenseValue?: number
+  creditCard?: boolean | undefined
+  quota?: number | undefined
+  totalQuota?: number | undefined
+}

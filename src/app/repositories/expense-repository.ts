@@ -12,6 +12,18 @@ class ExpenseRepository {
     }
   }
 
+  async update (expense: ExpenseTypes.IExpense, expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense | null> {
+    await mongodb.connect()
+    try {
+      return await Expense.findByIdAndUpdate(expenseId, expense, {
+        returnDocument: 'after',
+        select: '-user'
+      })
+    } finally {
+      await mongodb.disconnect()
+    }
+  }
+
   async delete (expenseId: ExpenseTypes.IExpense['id']): Promise<void> {
     await mongodb.connect()
     try {
@@ -34,7 +46,11 @@ class ExpenseRepository {
   async getByUser (userId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense[] | undefined> {
     await mongodb.connect()
     try {
-      const expenses: ExpenseTypes.IExpense[] = await Expense.find({ user: userId })
+      const expenses: ExpenseTypes.IExpense[] = await Expense
+        .find({ user: userId })
+        .populate({ path: 'category', select: '-user' })
+        .select('-user')
+
       return expenses
     } finally {
       await mongodb.disconnect()
@@ -44,7 +60,11 @@ class ExpenseRepository {
   async getById (id: ExpenseTypes.IExpense['id'] | string | number): Promise<ExpenseTypes.IExpense[] | undefined> {
     await mongodb.connect()
     try {
-      const expense: ExpenseTypes.IExpense[] = await Expense.find({ _id: id })
+      const expense: ExpenseTypes.IExpense[] = await Expense
+        .find({ _id: id })
+        .populate({ path: 'category', select: '-user' })
+        .select('-user')
+
       return expense
     } finally {
       await mongodb.disconnect()
@@ -58,13 +78,17 @@ class ExpenseRepository {
   ): Promise<ExpenseTypes.IExpense[] | undefined> {
     await mongodb.connect()
     try {
-      const expenses: ExpenseTypes.IExpense[] = await Expense.find({
-        user: userId,
-        expenseDate: {
-          $gte: iniDate,
-          $lte: finDate
-        }
-      })
+      const expenses: ExpenseTypes.IExpense[] = await Expense
+        .find({
+          user: userId,
+          expenseDate: {
+            $gte: iniDate,
+            $lte: finDate
+          }
+        })
+        .populate({ path: 'category', select: '-user' })
+        .select('-user')
+
       return expenses
     } finally {
       await mongodb.disconnect()

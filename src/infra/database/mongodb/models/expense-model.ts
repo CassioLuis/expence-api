@@ -16,7 +16,8 @@ const ExpenseSchema = new Schema({
     required: true
   },
   category: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
     required: true
   },
   expenseValue: {
@@ -28,20 +29,20 @@ const ExpenseSchema = new Schema({
     default: true
   },
   quota: {
-    type: String,
+    type: Number,
     default: 1
   },
   totalQuota: {
-    type: String,
+    type: Number,
     default: 1
   },
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
-  }
+  },
 })
 
-const Expense = mongoose.model('ExpenseSchema', ExpenseSchema)
+const Expense = mongoose.model('Expense', ExpenseSchema)
 
 export default Expense

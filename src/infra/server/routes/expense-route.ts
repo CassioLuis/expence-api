@@ -37,4 +37,11 @@ expenseRouter.get(`${basePath}`,
   expenseController.getAllByUser.bind(expenseController)
 )
 
+// PATCH
+expenseRouter.patch(`${basePath}/:expenseId`,
+  authMiddleware.tokenValidation,
+  reqValidatorMiddleware.updateExpenseValidation,
+  expenseController.update.bind(expenseController)
+)
+
 export default expenseRouter

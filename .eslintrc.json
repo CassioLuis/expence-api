@@ -20,6 +20,8 @@
     "sourceType": "module"
   },
   "plugins": ["eslint-plugin-import-helpers"],
+  "eslint array-callback-return": ["error", { "allowImplicit": true }],
+  "eslint no-trailing-spaces": "error",
   "rules": {
     "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/unbound-method": "off",
