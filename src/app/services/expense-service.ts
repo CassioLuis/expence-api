@@ -39,10 +39,11 @@ class ExpenseService {
     const categories = await categoryRepository.getByUser(user)
     const categoriesId = categories?.map((category: CategoryTypes.ICategory) => category.id)
     if (!categoriesId?.includes(category)) throw new Error('invalidCategory')
+
     await expenseRepository.save(expense)
   }
 
-  async update (expense: ExpenseTypes.IExpense, expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense | null | Error> {
+  async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense | null | Error> {
     if (!validId(expenseId)) throw new Error('invalidId')
     if (Object.keys(expense).length === 1) throw new Error('notingToUpdate')
     return await expenseRepository.update(expense, expenseId)
@@ -72,7 +73,6 @@ class ExpenseService {
 
   async getByDateInterval (userId: string, iniDate: string, finDate: string): Promise<any> {
     const expenses = await expenseRepository.getByDateInterval(userId, iniDate, finDate)
-    console.log(expenses)
     if (!expenses?.length) throw new Error('expenseNotFound')
 
     const analitic: ExpenseTypes.IAnalitic[] = expenses?.reduce(
@@ -87,7 +87,13 @@ class ExpenseService {
       }, []
     )
 
-    return { analitic, expenses }
+    const relevanceBalance = analitic.reduce((acc: any, item: any): any => {
+      const subCategory = item.category.subCategory || 'Indefinido'
+      acc[subCategory] = acc[subCategory] ?? item.value
+      return acc
+    }, {})
+
+    return { relevanceBalance, analitic, expenses }
   }
 }
 

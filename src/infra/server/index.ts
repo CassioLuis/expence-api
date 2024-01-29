@@ -6,11 +6,13 @@ import express,
   type Request
 } from 'express'
 
+import mongodb from '../../infra/database/mongodb'
+
 class Server {
   app: express.Application
   private readonly port: number | string
 
-  constructor () {
+  constructor (private readonly mongodb: any) {
     this.port = process.env.PORT ?? 8080
     this.app = express()
     this.start()
@@ -21,6 +23,7 @@ class Server {
     this.app.listen(this.port,
       () => { console.log(`Server running on port: ${this.port}.`) }
     )
+    this.mongodb.connect()
   }
 
   private config (): void {
@@ -37,4 +40,4 @@ class Server {
   }
 }
 
-export default new Server()
+export default new Server(mongodb)

@@ -5,6 +5,7 @@ const uri: string = process.env.MONGODB_URI ?? ''
 class MongoDb {
   async connect (): Promise<void> {
     await mongoose.connect(uri)
+    console.log('Mongo connected')
   }
 
   async disconnect (): Promise<void> {

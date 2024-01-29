@@ -19,7 +19,6 @@ class ExpenseController {
       await expenseService.create(req.body as ExpenseTypes.IExpense)
       res.sendStatus(201)
     } catch (error: any) {
-      console.log(error) 
       this.errorHandler(error, res)
     }
   }
@@ -43,7 +42,6 @@ class ExpenseController {
       const expenses = await expenseService.getByUser(user as unknown as ExpenseTypes.IExpense['user'])
       res.status(200).json(expenses)
     } catch (error: any) {
-      console.log(error)      
       this.errorHandler(error, res)
     }
   }
@@ -67,7 +65,6 @@ class ExpenseController {
       )
       res.status(201).json(expenses)
     } catch (error: any) {
-      console.log(error)
       this.errorHandler(error, res)
     }
   }
@@ -76,7 +73,7 @@ class ExpenseController {
     try {
       const { expenseId } = req.params
       const response = await expenseService.update(
-        req.body as ExpenseTypes.IExpense, expenseId as unknown as ExpenseTypes.IExpense['id']
+        req.body as ExpenseTypes.IExpenseUpdate, expenseId as unknown as ExpenseTypes.IExpense['id']
       )
       res.status(200).json(response)
     } catch (error: any) {

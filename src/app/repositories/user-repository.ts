@@ -4,24 +4,14 @@ import UserModel from '../../infra/database/mongodb/models/user-model'
 
 class UserRepository implements UserTypes.IUserRepository {
   async create (register: UserTypes.IUser): Promise<any> {
-    await MongoDb.connect()
-    try {
-      await UserModel.create(register)
-    } finally {
-      await MongoDb.disconnect()
-    }
+    await UserModel.create(register)
   }
 
   async get (
     value: object,
     select = '-password'
   ): Promise<UserTypes.IUser[] | []> {
-    await MongoDb.connect()
-    try {
-      return await UserModel.find(value).select(select)
-    } finally {
-      await MongoDb.disconnect()
-    }
+    return await UserModel.find(value).select(select)
   }
 
   async update (user: UserTypes.IUser): Promise<void> {

@@ -4,46 +4,26 @@ import Category from '../../infra/database/mongodb/models/category-model'
 
 class categoryRepository {
   async save (category: CategoryTypes.ICategory): Promise<void> {
-    await mongodb.connect()
-    try {
-      await Category.create(category)
-    } finally {
-      await mongodb.disconnect()
-    }
+    await Category.create(category)
   }
 
   async update (
     category: CategoryTypes.ICategory,
     categoryId: CategoryTypes.ICategory['id']
   ): Promise<CategoryTypes.ICategory | null> {
-    await mongodb.connect()
-    try {
-      return await Category.findByIdAndUpdate(categoryId, category, {
-        returnDocument: 'after',
-        select: '-user'
-      })
-    } finally {
-      await mongodb.disconnect()
-    }
+    return await Category.findByIdAndUpdate(categoryId, category, {
+      returnDocument: 'after',
+      select: '-user'
+    })
   }
 
   async delete (categoryId: CategoryTypes.ICategory['id']): Promise<void> {
-    await mongodb.connect()
-    try {
-      await Category.findByIdAndDelete(categoryId)
-    } finally {
-      await mongodb.disconnect()
-    }
+    await Category.findByIdAndDelete(categoryId)
   }
 
   async getByUser (userId: UserTypes.IUser['id']): Promise<CategoryTypes.ICategory[] | undefined> {
-    await mongodb.connect()
-    try {
-      const categorys: CategoryTypes.ICategory[] = await Category.find({ user: userId })
-      return categorys
-    } finally {
-      await mongodb.disconnect()
-    }
+    const categorys: CategoryTypes.ICategory[] = await Category.find({ user: userId })
+    return categorys
   }
 }
 
