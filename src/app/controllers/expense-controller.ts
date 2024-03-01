@@ -1,5 +1,4 @@
 import { type Request, type Response } from 'express'
-import { type Schema } from 'mongoose'
 
 import { type ExpenseTypes } from '../../@types'
 import { expenseService } from '../services'
@@ -50,7 +49,7 @@ class ExpenseController {
     try {
       const { expenseId } = req.params
       const expense = await expenseService.getById(expenseId)
-      res.status(201).json(expense)
+      res.status(200).json(expense)
     } catch (error: any) {
       this.errorHandler(error, res)
     }
@@ -63,7 +62,7 @@ class ExpenseController {
       const expenses = await expenseService.getByDateInterval(
         user as string, iniDate as string, finDate as string
       )
-      res.status(201).json(expenses)
+      res.status(200).json(expenses)
     } catch (error: any) {
       this.errorHandler(error, res)
     }
