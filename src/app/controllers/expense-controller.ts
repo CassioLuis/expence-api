@@ -26,7 +26,7 @@ class ExpenseController {
     try {
       const deletePayload: ExpenseTypes.IDeletePayload = {
         userId: req.body.user,
-        expenseId: req.params.expenseId as unknown as ExpenseTypes.IExpense['id']
+        expenseId: req.params.expenseId
       }
       await expenseService.delete(deletePayload)
       res.sendStatus(204)
@@ -72,7 +72,7 @@ class ExpenseController {
     try {
       const { expenseId } = req.params
       const response = await expenseService.update(
-        req.body as ExpenseTypes.IExpenseUpdate, expenseId as unknown as ExpenseTypes.IExpense['id']
+        req.body as ExpenseTypes.IExpenseUpdate, expenseId as unknown as ExpenseTypes.IExpense['_id']
       )
       res.status(200).json(response)
     } catch (error: any) {

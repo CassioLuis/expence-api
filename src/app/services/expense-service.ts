@@ -43,7 +43,7 @@ class ExpenseService {
     await expenseRepository.save(expense)
   }
 
-  async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense | null | Error> {
+  async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['_id']): Promise<ExpenseTypes.IExpense | null | Error> {
     if (!validId(expenseId)) throw new Error('invalidId')
     if (Object.keys(expense).length === 1) throw new Error('notingToUpdate')
     return await expenseRepository.update(expense, expenseId)
@@ -53,9 +53,9 @@ class ExpenseService {
     if (!validId(deletePayload.expenseId)) throw new Error('invalidId')
     const expenses = await expenseRepository.getByUser(deletePayload.userId)
     if (!expenses?.length) throw new Error('expenseNotFound')
-    const [expenseToDelete] = expenses.filter(expense => expense.id === deletePayload.expenseId)
+    const [expenseToDelete] = expenses.filter(expense => expense._id!.toString() === deletePayload.expenseId)
     if (!expenseToDelete) throw new Error('expenseNotFound')
-    await expenseRepository.delete(expenseToDelete.id)
+    await expenseRepository.delete(expenseToDelete._id)
   }
 
   async getByUser (userId: ExpenseTypes.IExpense['user']): Promise<ExpenseTypes.IExpense[] | undefined> {

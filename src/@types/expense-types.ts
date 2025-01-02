@@ -2,7 +2,7 @@ import { type Schema } from 'mongoose'
 import { CategoryTypes, ExpenseTypes, UserTypes } from '.'
 
 export interface IExpense {
-  id?: Schema.Types.ObjectId | undefined
+  _id?: Schema.Types.ObjectId
   expenseDate: string
   description: string
   category: CategoryTypes.ICategory['id']
@@ -15,7 +15,7 @@ export interface IExpense {
 
 export interface IDeletePayload {
   userId: UserTypes.IUser['id']
-  expenseId: ExpenseTypes.IExpense['id']
+  expenseId: string
 }
 
 export interface IAnalitic {

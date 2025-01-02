@@ -7,36 +7,44 @@ class ExpenseRepository {
     await Expense.create(expense)
   }
 
-  async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense | null> {
+  async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['_id']): Promise<ExpenseTypes.IExpense | null> {
     return await Expense.findByIdAndUpdate(expenseId, expense, {
       returnDocument: 'after',
       select: '-user'
     })
   }
 
-  async delete (expenseId: ExpenseTypes.IExpense['id']): Promise<void> {
+  async delete (expenseId: ExpenseTypes.IExpense['_id']): Promise<void> {
     await Expense.findByIdAndDelete(expenseId)
   }
 
   async getAll (): Promise<ExpenseTypes.IExpense[]> {
-    const expenses: ExpenseTypes.IExpense[] = await Expense.find()
+    const expenses: ExpenseTypes.IExpense[] = await Expense
+      .find()
+      .sort({ creationDate: -1 })
+      .lean()
+
     return expenses
   }
 
-  async getByUser (userId: ExpenseTypes.IExpense['id']): Promise<ExpenseTypes.IExpense[] | undefined> {
+  async getByUser (userId: ExpenseTypes.IExpense['_id']): Promise<ExpenseTypes.IExpense[] | undefined> {
     const expenses: ExpenseTypes.IExpense[] = await Expense
       .find({ user: userId })
       .populate({ path: 'category', select: '-user' })
       .select('-user')
+      .sort({ creationDate: -1 })
+      .lean()
 
     return expenses
   }
 
-  async getById (id: ExpenseTypes.IExpense['id'] | string | number): Promise<ExpenseTypes.IExpense[] | undefined> {
+  async getById (id: ExpenseTypes.IExpense['_id'] | string | number): Promise<ExpenseTypes.IExpense[] | undefined> {
     const expense: ExpenseTypes.IExpense[] = await Expense
       .find({ _id: id })
       .populate({ path: 'category', select: '-user' })
       .select('-user')
+      .sort({ creationDate: -1 })
+      .lean()
 
     return expense
   }
@@ -56,6 +64,8 @@ class ExpenseRepository {
       })
       .populate({ path: 'category', select: '-user' })
       .select('-user')
+      .sort({ creationDate: -1 })
+      .lean()
 
     return expenses
   }
@@ -65,6 +75,8 @@ class ExpenseRepository {
       .find({ category })
       .populate({ path: 'category', select: '-user' })
       .select('-user')
+      .sort({ creationDate: -1 })
+      .lean()
 
     return expenses
   }
