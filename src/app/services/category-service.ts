@@ -60,7 +60,7 @@ class CategoryService {
     const defaultCategory = '65b80f618adc2566b1a22ad8'
 
     expenseWithThisCategory.forEach(async (expense) => {
-      await expenseRepository.update({ category: defaultCategory }, expense.id)
+      await expenseRepository.update({ category: defaultCategory }, expense._id)
     })
 
     await categoryRepository.delete(categoryToDelete.id)

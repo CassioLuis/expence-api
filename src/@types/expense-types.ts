@@ -23,7 +23,6 @@ export interface IAnalitic {
   value: number
 }
 
-
 export interface IExpenseUpdate {
   expenseDate?: string
   description?: string
@@ -32,4 +31,5 @@ export interface IExpenseUpdate {
   creditCard?: boolean | undefined
   quota?: number | undefined
   totalQuota?: number | undefined
+  user?: IExpense['_id']
 }

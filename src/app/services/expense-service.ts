@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import { CategoryTypes, type ExpenseTypes } from '../../@types'
 import { categoryRepository, expenseRepository } from '../repositories'
 import validId from '../../helpers/utils/valid-objectid'
+import categoryService from './category-service'
 
 interface IError {
   status: number
@@ -46,6 +47,13 @@ class ExpenseService {
   async update (expense: ExpenseTypes.IExpenseUpdate, expenseId: ExpenseTypes.IExpense['_id']): Promise<ExpenseTypes.IExpense | null | Error> {
     if (!validId(expenseId)) throw new Error('invalidId')
     if (Object.keys(expense).length === 1) throw new Error('notingToUpdate')
+
+    if (expense.category) {
+      const categoriesByUser = await categoryService.getByUser(expense.user)
+      const categoryExists = categoriesByUser?.some(item => item.id === expense.category)
+      if (!categoryExists) throw new Error('invalidCategory')
+    }
+
     return await expenseRepository.update(expense, expenseId)
   }
 
