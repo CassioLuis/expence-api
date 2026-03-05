@@ -97,10 +97,9 @@ class ExpenseService {
 
     const relevanceBalance = analitic.reduce((acc: any, item: any): any => {
       const subCategory = item.category.subCategory || 'Indefinido'
-      acc[subCategory] = acc[subCategory] ?? item.value
+      acc[subCategory] = acc[subCategory] ? acc[subCategory] + item.value : item.value
       return acc
     }, {})
-
     return { relevanceBalance, analitic, expenses }
   }
 }
