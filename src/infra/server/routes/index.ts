@@ -5,6 +5,7 @@ import expenseRouter from './expense-route'
 import swaggerRoute from './swagger-route'
 import usersRoute from './user-route'
 import categoryRouter from './category-route'
+import importCsvRouter from './import-csv-route'
 
 const router = Router()
 
@@ -12,6 +13,7 @@ router.use(usersRoute)
 router.use(authRouter)
 router.use(expenseRouter)
 router.use(categoryRouter)
+router.use(importCsvRouter)
 
 
 router.use('/doc', swaggerRoute)

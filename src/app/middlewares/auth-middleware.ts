@@ -7,7 +7,7 @@ import type ITokenHandlerContract from '../adapters/tokenHandler/tokenHandler-co
 import userRepository from '../repositories/user-repository'
 
 class AuthMiddleware {
-  constructor (readonly TokenHandlerAdapter: ITokenHandlerContract) { }
+  constructor(readonly TokenHandlerAdapter: ITokenHandlerContract) { }
 
   async credentialsValidation (req: Request, res: Response, next: NextFunction): Promise<Response | undefined> {
     try {
