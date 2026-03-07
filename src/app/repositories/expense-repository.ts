@@ -80,6 +80,36 @@ class ExpenseRepository {
 
     return expenses
   }
+
+  async updateManyByDescriptionAndCategory (
+    userId: string,
+    description: string,
+    fromCategoryId: string,
+    toCategoryId: string
+  ): Promise<number> {
+    const result = await Expense.updateMany(
+      {
+        user: userId,
+        description: { $regex: new RegExp(`^${description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+        category: fromCategoryId
+      },
+      { $set: { category: toCategoryId } }
+    )
+    return result.modifiedCount
+  }
+
+  async findOneByDescriptionWithCategory (
+    userId: string,
+    description: string,
+    excludeCategoryId: string
+  ): Promise<ExpenseTypes.IExpense | null> {
+    const expense = await Expense.findOne({
+      user: userId,
+      description: { $regex: new RegExp(`^${description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+      category: { $ne: excludeCategoryId }
+    }).lean()
+    return expense as ExpenseTypes.IExpense | null
+  }
 }
 
 export default new ExpenseRepository()

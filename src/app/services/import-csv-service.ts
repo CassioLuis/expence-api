@@ -2,6 +2,7 @@ import { type ExpenseTypes } from '../../@types'
 import Expense from '../../infra/database/mongodb/models/expense-model'
 import { IBankParser, ParsedExpense, SkippedItem } from './parsers/bank-parser'
 import nubankParser from './parsers/nubank-parser'
+import autoCategorizeService from './auto-categorize-service'
 
 interface DuplicateItem {
   description: string
@@ -71,9 +72,34 @@ class ImportCsvService {
     // Deduplicate against existing expenses
     const { toInsert, duplicateItems } = await this.deduplicate(allExpenses, userId)
 
+    // Auto-categorize: resolve categories based on existing categorized expenses
+    const resolvedCategories = new Map<string, string>()
+    for (const expense of toInsert) {
+      const descLower = expense.description.toLowerCase()
+      if (!resolvedCategories.has(descLower)) {
+        const resolved = await autoCategorizeService.resolveCategory(
+          userId,
+          expense.description,
+          defaultCategoryId
+        )
+        resolvedCategories.set(descLower, resolved)
+      }
+      const resolvedCat = resolvedCategories.get(descLower)!
+      if (resolvedCat !== defaultCategoryId) {
+        expense.category = resolvedCat as any
+      }
+    }
+
     // Bulk insert
     if (toInsert.length > 0) {
       await Expense.insertMany(toInsert)
+    }
+
+    // Propagate resolved categories to any remaining uncategorized expenses
+    for (const [desc, categoryId] of resolvedCategories) {
+      if (categoryId !== defaultCategoryId) {
+        await autoCategorizeService.propagateCategory(userId, desc, categoryId)
+      }
     }
 
     return {

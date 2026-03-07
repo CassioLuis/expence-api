@@ -4,6 +4,7 @@ import { CategoryTypes, type ExpenseTypes } from '../../@types'
 import { categoryRepository, expenseRepository } from '../repositories'
 import validId from '../../helpers/utils/valid-objectid'
 import categoryService from './category-service'
+import autoCategorizeService from './auto-categorize-service'
 
 interface IError {
   status: number
@@ -54,7 +55,22 @@ class ExpenseService {
       if (!categoryExists) throw new Error('invalidCategory')
     }
 
-    return await expenseRepository.update(expense, expenseId)
+    const updated = await expenseRepository.update(expense, expenseId)
+
+    // Auto-categorize: propagate the new category to all uncategorized 
+    // expenses with the same description
+    if (expense.category && expense.user && updated) {
+      const description = (updated as any).description || expense.description
+      if (description) {
+        await autoCategorizeService.propagateCategory(
+          expense.user.toString(),
+          description,
+          expense.category
+        )
+      }
+    }
+
+    return updated
   }
 
   async delete (deletePayload: ExpenseTypes.IDeletePayload): Promise<void> {

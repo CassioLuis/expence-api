@@ -30,7 +30,6 @@ class ImportCsvController {
         categoryId,
         bankType
       )
-      console.log(result)
       res.status(200).json(result)
     } catch (error: any) {
       this.errorHandler(error, res)
