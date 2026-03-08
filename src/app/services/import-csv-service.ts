@@ -179,26 +179,19 @@ class ImportCsvService {
     // Get all existing expenses for the user
     const existingExpenses: ExpenseTypes.IExpense[] = await Expense
       .find({ user: userId })
-      .select('description quota totalQuota expenseValue')
+      .select('description quota totalQuota expenseValue expenseDate')
       .lean()
 
     const toInsert: ExpenseTypes.IExpense[] = []
     const duplicateItems: DuplicateItem[] = []
-
     for (const expense of expenses) {
-      // Only check duplicates for installment items
-      if (!expense.totalQuota || expense.totalQuota <= 1) {
-        toInsert.push(expense)
-        continue
-      }
-
       const isDuplicate = existingExpenses.some(existing => {
         const descMatch = existing.description.toLowerCase() === expense.description.toLowerCase()
         const quotaMatch = existing.quota === expense.quota
         const totalQuotaMatch = existing.totalQuota === expense.totalQuota
         const valueMatch = Math.abs(existing.expenseValue - expense.expenseValue) <= VALUE_TOLERANCE
-
-        return descMatch && quotaMatch && totalQuotaMatch && valueMatch
+        const monthMatch = existing.expenseDate.substring(5, 7) === expense.expenseDate.substring(5, 7)
+        return descMatch && quotaMatch && totalQuotaMatch && valueMatch && monthMatch
       })
 
       if (isDuplicate) {
