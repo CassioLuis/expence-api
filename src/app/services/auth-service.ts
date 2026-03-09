@@ -18,19 +18,61 @@ class AuthService implements AuthTypes.IAuthService {
     return { token }
   }
 
-  async googleLogin (credential: string): Promise<AuthTypes.IToken> {
+  private async validateGoogleIdToken (credential: string) {
     const ticket = await client.verifyIdToken({
       idToken: credential,
     })
     const payload = ticket.getPayload()
 
     if (!payload?.email) {
-      throw new Error('Invalid Google token payload')
+      throw new Error('Authentication failed')
     }
 
-    const email = payload.email
-    const name = payload.given_name ?? 'User'
-    const lastName = payload.family_name ?? ''
+    return {
+      email: payload.email,
+      name: payload.given_name ?? 'User',
+      lastName: payload.family_name ?? ''
+    }
+  }
+
+  private async validateGoogleAccessToken (credential: string) {
+    const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${credential}` }
+    })
+
+    if (!response.ok) {
+      throw new Error('Authentication failed')
+    }
+
+    const payload = await response.json()
+
+    if (!payload?.email) {
+      throw new Error('Authentication failed')
+    }
+
+    return {
+      email: payload.email,
+      name: payload.given_name ?? 'User',
+      lastName: payload.family_name ?? ''
+    }
+  }
+
+  async googleLogin (credential: string): Promise<AuthTypes.IToken> {
+    let email: string
+    let name: string
+    let lastName: string
+
+    if (credential.split('.').length === 3) {
+      const idTokenData = await this.validateGoogleIdToken(credential)
+      email = idTokenData.email
+      name = idTokenData.name
+      lastName = idTokenData.lastName
+    } else {
+      const accessTokenData = await this.validateGoogleAccessToken(credential)
+      email = accessTokenData.email
+      name = accessTokenData.name
+      lastName = accessTokenData.lastName
+    }
 
     let user = await User.findOne({ email })
 
