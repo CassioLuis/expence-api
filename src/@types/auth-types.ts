@@ -15,10 +15,12 @@ export interface IToken {
 
 export interface IAuthController {
   login: (req: Request, res: Response) => Promise<void>
+  googleLogin: (req: Request, res: Response) => Promise<void>
 }
 
 export interface IAuthService {
   login: (userId: Schema.Types.ObjectId) => Promise<IToken>
+  googleLogin: (credential: string) => Promise<IToken>
 }
 
 export interface IAuthMiddleware {

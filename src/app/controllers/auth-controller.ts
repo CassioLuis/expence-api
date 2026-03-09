@@ -16,6 +16,23 @@ class AuthController implements IAuthController {
       res.status(401).json({ error: error.message })
     }
   }
+
+  async googleLogin (
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      const { credential } = req.body
+      if (!credential) {
+        res.status(400).json({ error: 'Google credential is required' })
+        return
+      }
+      const response = await authService.googleLogin(credential)
+      res.status(200).json(response)
+    } catch (error: any) {
+      res.status(401).json({ error: error.message })
+    }
+  }
 }
 
 export default new AuthController()
