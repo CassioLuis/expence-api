@@ -30,7 +30,19 @@ class Server {
   private config (): void {
     this.app.use(express.json())
     this.app.use(cookieParser())
-    this.app.use(cors({ origin: true, credentials: true }))
+    const allowedOrigins = [
+      process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:1420' // Tauri dev url
+    ]
+    this.app.use(cors({
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true)
+        } else {
+          callback(new Error('Not allowed by CORS'))
+        }
+      },
+      credentials: true
+    }))
     this.app.use(this.jsonValidator)
   }
 
