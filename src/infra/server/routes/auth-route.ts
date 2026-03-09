@@ -18,4 +18,8 @@ authRouter.post(`${basePath}/google`,
   authController.googleLogin
 )
 
+authRouter.post(`${basePath}/logout`,
+  authController.logout
+)
+
 export default authRouter

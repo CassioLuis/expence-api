@@ -10,8 +10,14 @@ class AuthController implements IAuthController {
     res: Response
   ): Promise<void> {
     try {
-      const response = await authService.login(req.body.id as Schema.Types.ObjectId)
-      res.status(200).json(response)
+      const { token, ...userData } = await authService.login(req.body.id as Schema.Types.ObjectId)
+      res.cookie('access-token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      })
+      res.status(200).json(userData)
     } catch (error: any) {
       res.status(401).json({ error: error.message })
     }
@@ -27,10 +33,27 @@ class AuthController implements IAuthController {
         res.status(400).json({ error: 'Google credential is required' })
         return
       }
-      const response = await authService.googleLogin(credential)
-      res.status(200).json(response)
+      const { token, ...userData } = await authService.googleLogin(credential)
+      res.cookie('access-token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      })
+      res.status(200).json(userData)
     } catch (error: any) {
       res.status(401).json({ error: error.message })
+    }
+  }
+  async logout (
+    req: Request,
+    res: Response
+  ): Promise<void> {
+    try {
+      res.clearCookie('access-token')
+      res.status(200).json({ message: 'Logged out successfully' })
+    } catch (error: any) {
+      res.status(500).json({ error: error.message })
     }
   }
 }
