@@ -24,11 +24,16 @@ class AuthMiddleware {
 
   tokenValidation (req: Request, res: Response, next: NextFunction): any {
     try {
-      const { authorization } = req.headers
-      if (!authorization) throw new Error()
+      let token = req.cookies['access-token']
 
-      const [schema, token] = authorization.split(' ')
-      if (schema !== 'Bearer' || !token) throw new Error()
+      if (!token && req.headers.authorization) {
+        const [schema, bearerToken] = req.headers.authorization.split(' ')
+        if (schema === 'Bearer' && bearerToken) {
+          token = bearerToken
+        }
+      }
+
+      if (!token) throw new Error()
 
       const decoded = TokenHandlerAdapter.tokenVerify(token, process.env.SECRET_JWT ?? '')
       req.body.user = decoded.userId

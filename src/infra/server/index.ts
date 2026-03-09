@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import express,
 {
@@ -12,7 +13,7 @@ class Server {
   app: express.Application
   private readonly port: number | string
 
-  constructor (private readonly mongodb: any) {
+  constructor(private readonly mongodb: any) {
     this.port = process.env.PORT ?? 8080
     this.app = express()
     this.start()
@@ -28,7 +29,8 @@ class Server {
 
   private config (): void {
     this.app.use(express.json())
-    this.app.use(cors())
+    this.app.use(cookieParser())
+    this.app.use(cors({ origin: true, credentials: true }))
     this.app.use(this.jsonValidator)
   }
 
