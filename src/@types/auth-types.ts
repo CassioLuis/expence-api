@@ -11,6 +11,9 @@ export interface ILogin {
 
 export interface IToken {
   token: string
+  name?: string
+  lastName?: string
+  email?: string
 }
 
 export interface IAuthController {

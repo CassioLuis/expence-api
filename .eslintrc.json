@@ -9,7 +9,9 @@
       "env": {
         "node": true
       },
-      "files": [".eslintrc.{js,cjs}"],
+      "files": [
+        ".eslintrc.{js,cjs}"
+      ],
       "parserOptions": {
         "sourceType": "script"
       }
@@ -19,8 +21,15 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["eslint-plugin-import-helpers"],
-  "eslint array-callback-return": ["error", { "allowImplicit": true }],
+  "plugins": [
+    "eslint-plugin-import-helpers"
+  ],
+  "eslint array-callback-return": [
+    "error",
+    {
+      "allowImplicit": true
+    }
+  ],
   "eslint no-trailing-spaces": "error",
   "rules": {
     "@typescript-eslint/no-extraneous-class": "off",
@@ -37,7 +46,15 @@
       "warn",
       {
         "newlinesBetween": "always",
-        "groups": ["module", "/^@shared/", ["parent", "sibling", "index"]],
+        "groups": [
+          "module",
+          "/^@shared/",
+          [
+            "parent",
+            "sibling",
+            "index"
+          ]
+        ],
         "alphabetize": {
           "order": "asc",
           "ignoreCase": true
@@ -45,5 +62,7 @@
       }
     ]
   },
-  "ignorePatterns": [".eslintrc.js"]
+  "ignorePatterns": [
+    ".eslintrc.js"
+  ]
 }

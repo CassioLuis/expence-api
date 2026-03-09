@@ -12,10 +12,19 @@ class AuthService implements AuthTypes.IAuthService {
   constructor(private readonly tokenHandler: TokenHandlerContract) { }
 
   async login (userId: Schema.Types.ObjectId): Promise<AuthTypes.IToken> {
+    const user = await User.findById(userId)
+    if (!user) {
+      throw new Error('User not found')
+    }
     const secretKey = process.env.SECRET_JWT ?? ''
     const expiresIn = { expiresIn: '24h' }
     const token = this.tokenHandler.tokenGenerate(userId, secretKey, expiresIn)
-    return { token }
+    return {
+      token,
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email
+    }
   }
 
   private async validateGoogleIdToken (credential: string) {
@@ -90,7 +99,12 @@ class AuthService implements AuthTypes.IAuthService {
     const expiresIn = { expiresIn: '24h' }
     const token = this.tokenHandler.tokenGenerate(user._id as unknown as Schema.Types.ObjectId, secretKey, expiresIn)
 
-    return { token }
+    return {
+      token,
+      name: user.name,
+      lastName: user.lastName,
+      email: user.email
+    }
   }
 }
 
