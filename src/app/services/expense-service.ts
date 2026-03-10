@@ -97,7 +97,7 @@ class ExpenseService {
 
   async getByDateInterval (userId: string, iniDate: string, finDate: string): Promise<any> {
     const expenses = await expenseRepository.getByDateInterval(userId, iniDate, finDate)
-    if (!expenses?.length) throw new Error('expenseNotFound')
+    if (!expenses?.length) return {}
 
     const analitic: ExpenseTypes.IAnalitic[] = expenses?.reduce(
       (acc: ExpenseTypes.IAnalitic[], item: ExpenseTypes.IExpense): ExpenseTypes.IAnalitic[] => {
