@@ -30,22 +30,28 @@ class Server {
   private config (): void {
     this.app.use(express.json())
     this.app.use(cookieParser())
+    const isProd = process.env.NODE_ENV === "production"
     const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:1420'
+      process.env.FRONTEND_URL
     ]
-
-    this.app.use(cors({
-      origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true)
-        } else {
+    this.app.use(cors(
+      {
+        origin: (origin, callback) => {
+          if (!origin) return callback(new Error('Not allowed by CORS'))
+          if (!isProd) return callback(null, true)
+          if (allowedOrigins.includes(origin)) return callback(null, true)
           callback(new Error('Not allowed by CORS'))
-        }
-      },
-      credentials: true,
-      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
-    }))
+        },
+        credentials: true,
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+        allowedHeaders: [
+          'Content-Type',
+          'Authorization',
+          'X-Requested-With',
+          'Accept'
+        ]
+      }
+    ))
 
     this.app.options('*', cors())
     this.app.use(this.jsonValidator)

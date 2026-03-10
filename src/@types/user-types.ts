@@ -23,6 +23,6 @@ export interface IUserService {
 
 export interface IUserRepository {
   create: (register: IUser) => Promise<void>
-  get: (value: object) => Promise<IUser[] | []>
+  get: (value: object) => Promise<IUser | null>
   update: (params: IUser) => Promise<void>
 }

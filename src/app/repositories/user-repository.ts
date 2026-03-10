@@ -1,5 +1,4 @@
 import { type UserTypes } from '../../@types'
-import MongoDb from '../../infra/database/mongodb'
 import UserModel from '../../infra/database/mongodb/models/user-model'
 
 class UserRepository implements UserTypes.IUserRepository {
@@ -7,11 +6,9 @@ class UserRepository implements UserTypes.IUserRepository {
     await UserModel.create(register)
   }
 
-  async get (
-    value: object,
-    select = '-password'
-  ): Promise<UserTypes.IUser[] | []> {
-    return await UserModel.find(value).select(select)
+  async get (value: object, select = '-password'): Promise<UserTypes.IUser | null> {
+    const user = await UserModel.findOne(value).select(select)
+    return user
   }
 
   async update (user: UserTypes.IUser): Promise<void> {

@@ -9,7 +9,7 @@ export const Create: z.ZodType<UserTypes.IUser> = z.object({
   email: z.string().email().refine(
     async (email) => {
       const user = await userRepository.get({ email })
-      return !user.length
+      return user
     },
     { message: 'This e-mail is already in use' }
   ),
@@ -25,7 +25,7 @@ export const Email = z.object({
   email: z.string().email().refine(
     async (email) => {
       const user = await userRepository.get({ email })
-      return user.length
+      return user
     },
     { message: 'User not found' }
   )

@@ -13,9 +13,10 @@ class AuthMiddleware {
     try {
       const { email, password } = req.body as AuthTypes.ILogin
       const user = await userRepository.get({ email }, '+password')
-      const [loged] = user.filter(user => user.password === encode(password))
+      if (!user) return res.status(401).json({ message: 'Invalid user' })
+      const loged = user.password === encode(password)
       if (!loged) return res.status(401).json({ message: 'Invalid user' })
-      req.body.id = loged.id
+      req.body.id = user.id
       next()
     } catch {
       return res.sendStatus(500)
