@@ -31,18 +31,23 @@ class Server {
     this.app.use(express.json())
     this.app.use(cookieParser())
     const allowedOrigins = [
-      process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:1420' // Tauri dev url
+      process.env.FRONTEND_URL || 'http://localhost:5173', 'http://localhost:1420'
     ]
+
     this.app.use(cors({
-      origin: (origin, callback) => {
+      origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
           callback(null, true)
         } else {
           callback(new Error('Not allowed by CORS'))
         }
       },
-      credentials: true
+      credentials: true,
+      methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
     }))
+
+    this.app.options('*', cors())
     this.app.use(this.jsonValidator)
   }
 
