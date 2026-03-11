@@ -28,6 +28,10 @@ class goalRepository {
     const goals: GoalTypes.IGoal[] = await Goal.find({ user: userId }).select('-user')
     return goals
   }
+
+  async deleteByCategoryId (categoryId: string): Promise<void> {
+    await Goal.deleteMany({ category: categoryId })
+  }
 }
 
 export default new goalRepository()

@@ -3,4 +3,5 @@ export interface IGoal {
   categoryName: string
   amount: number
   user: string
+  category?: string
 }

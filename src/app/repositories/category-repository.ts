@@ -3,8 +3,9 @@ import mongodb from '../../infra/database/mongodb'
 import Category from '../../infra/database/mongodb/models/category-model'
 
 class categoryRepository {
-  async save (category: CategoryTypes.ICategory): Promise<void> {
-    await Category.create(category)
+  async save (category: CategoryTypes.ICategory): Promise<CategoryTypes.ICategory> {
+    const created = await Category.create(category)
+    return created.toObject() as unknown as CategoryTypes.ICategory
   }
 
   async update (

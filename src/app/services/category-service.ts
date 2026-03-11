@@ -1,6 +1,6 @@
 import { CategoryTypes, UserTypes, type ExpenseTypes } from '../../@types'
 import validId from '../../helpers/utils/valid-objectid'
-import { categoryRepository, expenseRepository } from '../repositories'
+import { categoryRepository, expenseRepository, goalRepository } from '../repositories'
 
 interface IError {
   status: number
@@ -35,7 +35,16 @@ class CategoryService {
     if (!subCategory) {
       subCategory = 'Indefinido'
     }
-    await categoryRepository.save({ name, subCategory, user })
+    const createdCategory = await categoryRepository.save({ name, subCategory, user })
+
+    if (createdCategory.id) {
+      await goalRepository.save({
+        categoryName: createdCategory.name,
+        amount: 0,
+        user: String(user),
+        category: String(createdCategory.id)
+      })
+    }
   }
 
   async update (
@@ -63,6 +72,7 @@ class CategoryService {
       await expenseRepository.update({ category: defaultCategory }, expense._id)
     })
 
+    await goalRepository.deleteByCategoryId(String(categoryToDelete.id))
     await categoryRepository.delete(categoryToDelete.id)
   }
 
