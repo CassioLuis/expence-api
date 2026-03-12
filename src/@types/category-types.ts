@@ -3,6 +3,7 @@ import { CategoryTypes, UserTypes } from '.'
 
 export interface ICategory {
   id?: Schema.Types.ObjectId | undefined | string
+  _id?: Schema.Types.ObjectId | undefined | string
   name: string
   subCategory?: string | null
   user?: Schema.Types.ObjectId,

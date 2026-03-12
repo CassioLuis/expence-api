@@ -11,15 +11,9 @@ class GoalService {
     return goals || []
   }
 
-  async upsertGoals (userId: string, goals: { categoryName: string, amount: number }[]): Promise<GoalTypes.IGoal[]> {
-    const updatedGoals: GoalTypes.IGoal[] = []
-
-    for (const goal of goals) {
-      const updated = await goalRepository.upsertGoal(userId, goal.categoryName, goal.amount)
-      if (updated) updatedGoals.push(updated)
-    }
-
-    return updatedGoals
+  async upsertGoals (userId: string, goal: GoalTypes.IGoal): Promise<GoalTypes.IGoal | false> {
+    const updated = await goalRepository.upsertGoal(userId, goal)
+    return updated || false
   }
 }
 

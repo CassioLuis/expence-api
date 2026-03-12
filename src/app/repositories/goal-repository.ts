@@ -16,10 +16,10 @@ class goalRepository {
     })
   }
 
-  async upsertGoal (userId: string, categoryName: string, amount: number): Promise<GoalTypes.IGoal | null> {
+  async upsertGoal (userId: string, goal: GoalTypes.IGoal): Promise<GoalTypes.IGoal | null> {
     return await Goal.findOneAndUpdate(
-      { user: userId, categoryName },
-      { amount },
+      { user: userId, categoryName: goal.categoryName },
+      { amount: goal.amount },
       { upsert: true, new: true, returnDocument: 'after' }
     )
   }

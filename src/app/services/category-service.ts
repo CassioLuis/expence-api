@@ -37,12 +37,12 @@ class CategoryService {
     }
     const createdCategory = await categoryRepository.save({ name, subCategory, user })
 
-    if (createdCategory.id) {
+    if (createdCategory._id) {
       await goalRepository.save({
         categoryName: createdCategory.name,
         amount: 0,
         user: String(user),
-        category: String(createdCategory.id)
+        category: String(createdCategory._id)
       })
     }
   }
@@ -71,9 +71,10 @@ class CategoryService {
     expenseWithThisCategory.forEach(async (expense) => {
       await expenseRepository.update({ category: defaultCategory }, expense._id)
     })
-
-    await goalRepository.deleteByCategoryId(String(categoryToDelete.id))
-    await categoryRepository.delete(categoryToDelete.id)
+    await Promise.all([
+      categoryRepository.delete(categoryToDelete.id),
+      goalRepository.deleteByCategoryId(String(categoryToDelete.id))
+    ])
   }
 
   async getByUser (userId: UserTypes.IUser['id']): Promise<CategoryTypes.ICategory[] | undefined> {
