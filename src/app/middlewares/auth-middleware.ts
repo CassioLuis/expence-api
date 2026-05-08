@@ -13,9 +13,9 @@ class AuthMiddleware {
     try {
       const { email, password } = req.body as AuthTypes.ILogin
       const user = await userRepository.get({ email }, '+password')
-      if (!user) return res.status(401).json({ message: 'Invalid user' })
+      if (!user) return res.status(401).json({ message: 'Access denied' })
       const loged = user.password === encode(password)
-      if (!loged) return res.status(401).json({ message: 'Invalid user' })
+      if (!loged) return res.status(401).json({ message: 'Access denied' })
       req.body.id = user.id
       next()
     } catch {
@@ -40,7 +40,7 @@ class AuthMiddleware {
       req.body.user = decoded.userId
       next()
     } catch {
-      res.status(401).json({ message: 'Invalid token' })
+      res.status(401).json({ message: 'Access denied' })
     }
   }
 }

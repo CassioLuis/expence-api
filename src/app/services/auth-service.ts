@@ -5,8 +5,11 @@ import { TokenHandlerAdapter, type TokenHandlerContract } from '../adapters/toke
 import crypto from 'crypto'
 import { OAuth2Client } from 'google-auth-library'
 import User from '../../infra/database/mongodb/models/user-model'
+import encode from '../../helpers/utils/encode-password'
 
 const client = new OAuth2Client()
+const EXPIRES_IN = { expiresIn: '24h' }
+const SECRET_KEY = process.env.SECRET_JWT ?? ''
 
 class AuthService implements AuthTypes.IAuthService {
   constructor(private readonly tokenHandler: TokenHandlerContract) { }
@@ -16,9 +19,7 @@ class AuthService implements AuthTypes.IAuthService {
     if (!user) {
       throw new Error('User not found')
     }
-    const secretKey = process.env.SECRET_JWT ?? ''
-    const expiresIn = { expiresIn: '24h' }
-    const token = this.tokenHandler.tokenGenerate(userId, secretKey, expiresIn)
+    const token = this.tokenHandler.tokenGenerate(userId, SECRET_KEY, EXPIRES_IN)
     return {
       token,
       name: user.name,
@@ -87,17 +88,16 @@ class AuthService implements AuthTypes.IAuthService {
 
     if (!user) {
       const randomPassword = crypto.randomBytes(16).toString('hex')
+      const encodePassword = encode(randomPassword)
       user = await User.create({
         name,
         lastName,
         email,
-        password: randomPassword
+        password: encodePassword
       })
     }
 
-    const secretKey = process.env.SECRET_JWT ?? ''
-    const expiresIn = { expiresIn: '24h' }
-    const token = this.tokenHandler.tokenGenerate(user._id as unknown as Schema.Types.ObjectId, secretKey, expiresIn)
+    const token = this.tokenHandler.tokenGenerate(user._id as unknown as Schema.Types.ObjectId, SECRET_KEY, EXPIRES_IN)
 
     return {
       token,
